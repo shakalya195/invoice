@@ -7,19 +7,19 @@
     </div>
     <div class="op" fxLayout="row" fxLayoutAlign="space-between">
         <input [(ngModel)]="bgColor" (change)="changeToUppercase()" type="text" class="color-text"/>
-        <input [(ngModel)]="bgColor" type="color" class="color-input"/>
+        <input [(ngModel)]="bgColor" (change)="changeToUppercase()" type="color" class="color-input"/>
     </div>
     <div class="op" fxLayout="row" fxLayoutAlign="space-between">
         <input [(ngModel)]="accentColor" (change)="changeToUppercase()" type="text" class="color-text"/>
-        <input [(ngModel)]="accentColor" type="color" class="color-input"/>
+        <input [(ngModel)]="accentColor" (change)="changeToUppercase()" type="color" class="color-input"/>
     </div>
     <div class="op" fxLayout="row" fxLayoutAlign="space-between">
         <input [(ngModel)]="taxColor" (change)="changeToUppercase()" type="text" class="color-text"/>
-        <input [(ngModel)]="taxColor" type="color" class="color-input"/>
+        <input [(ngModel)]="taxColor" (change)="changeToUppercase()" type="color" class="color-input"/>
     </div>
     <div class="title">Columns</div>
     <div *ngFor="let key of Object.keys(invoiceData.columns)" class="tax-row" fxLayout="row">
-        <input [(ngModel)]="invoiceData['columns'][key]" class="inText"/>
+        <input [(ngModel)]="invoiceData['columns'][key]" class="inText" (change)="changeToUppercase()"/>
         <mat-checkbox [(ngModel)]="invoiceData['visibleColumns'][key]" class="example-margin"></mat-checkbox>
     </div>
     <div class="title">Taxes</div>

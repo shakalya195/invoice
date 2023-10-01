@@ -177,6 +177,7 @@ export class InvoiceComponent implements OnInit {
     this.bgColor = this.bgColor.toUpperCase();
     this.invoiceData.accentColor = this.accentColor;
     this.invoiceData.bgColor = this.bgColor;
+    this.invoiceData.taxColor = this.taxColor;
     this.updateInvoice();
   }
 
