@@ -1,0 +1,310 @@
+<div class="options"  [ngClass]="{'hide':hide}">
+    <div class="title">Actions</div>
+    <div (click)="hide=!hide" class="handle"></div>
+    <div><mat-checkbox [(ngModel)]="previewMode" (change)="changePreviewMode()" class="example-margin">Preview</mat-checkbox></div>
+    <div (click)="exportPDF()" class="op">
+        <img src="assets/pdf-30.png" class="tinypdf"/> Export PDF
+    </div>
+    <div class="op" fxLayout="row" fxLayoutAlign="space-between">
+        <input [(ngModel)]="bgColor" (change)="changeToUppercase()" type="text" class="color-text"/>
+        <input [(ngModel)]="bgColor" type="color" class="color-input"/>
+    </div>
+    <div class="op" fxLayout="row" fxLayoutAlign="space-between">
+        <input [(ngModel)]="accentColor" (change)="changeToUppercase()" type="text" class="color-text"/>
+        <input [(ngModel)]="accentColor" type="color" class="color-input"/>
+    </div>
+    <div class="op" fxLayout="row" fxLayoutAlign="space-between">
+        <input [(ngModel)]="taxColor" (change)="changeToUppercase()" type="text" class="color-text"/>
+        <input [(ngModel)]="taxColor" type="color" class="color-input"/>
+    </div>
+    <div class="title">Columns</div>
+    <div *ngFor="let key of Object.keys(invoiceData.columns)" class="tax-row" fxLayout="row">
+        <input [(ngModel)]="invoiceData['columns'][key]" class="inText"/>
+        <mat-checkbox [(ngModel)]="invoiceData['visibleColumns'][key]" class="example-margin"></mat-checkbox>
+    </div>
+    <div class="title">Taxes</div>
+    <div *ngFor="let tax of invoiceData.taxes; let index=index" class="tax-row" fxLayout="row" fxLayoutAlign="space-between center" (click)="onTaxSelect(tax,index)">
+        <div>
+            {{tax.description}} {{tax.value}} {{tax?.type=='percentage' ? '%': getCurrencySymbol() }}
+        </div>
+        <div class="delete-item-option" (click)="removeTax(index)">
+            -
+        </div>
+    </div>
+    <div *ngIf="!newTax"class="op" ><a class="action-btn" (click)="openTaxForm()">+ Create New Tax</a></div>
+    <div *ngIf="newTax" class="op add-tax-row" fxLayout="row">
+        <input type="text" [(ngModel)]="newTax.description"/>
+        <input type="text" [(ngModel)]="newTax.value"/>
+        <span class="conversion-icon" (click)="changeTaxType(newTax)">{{newTax?.type=='percentage' ? '%': getCurrencySymbol() }}</span>
+        <span class="action-btn" (click)="addNewTax(index)">SAVE</span>
+    </div>
+</div>
+
+<div #printmedia id="invoice" class="invoice bgColor" [ngClass]="{'previewMode':previewMode}" [style.backgroundColor]="bgColor">
+    <div class="header sider" fxLayout="row" fxLayoutAlign="space-between">
+        <div>
+            <h2 contenteditable="true">Psychoconsultance.com</h2>
+            <p contenteditable="true">
+                3184 Spruce Drive Pittsburgh, PA 15201<br/>
+                contact@psychoconsultance.com<br/>
+                012-345-6789
+            </p>
+        </div>
+        <div class="logo">
+            <img class="logo-img" [src]="url" />
+            <input type="file" (change)="onfileChange($event)"/>
+        </div>
+    </div>
+    <!-- <div class="sider head" [style.backgroundColor]="accentColor">
+
+    </div> -->
+    <hr/>
+    <div class="selected-column-row mt-20" fxLayout="row" fxLayoutAlign="space-between center">
+        <div>
+            <span class="billto">Bill To:</span>
+            <p contenteditable="true">
+		Preston Miller<br/>
+		4068 Post Avenue Newfolden, MN 56738<br/>
+		PrestonMiller@armyspy.com<br/>
+		001-234-5678
+            </p>
+            <br/>
+        </div>
+        <div class="info">
+            <div class="mb5" fxLayout="row" fxLayoutAlign="space-between"><span class="bold" contenteditable="true">Invoice Number</span>:<span class="val" contenteditable="true">#1</span></div>
+            <div class="mb5" fxLayout="row" fxLayoutAlign="space-between"><span class="bold" contenteditable="true">Invoice Date</span>:<span class="val" contenteditable="true">24 dec 2012</span></div>
+            <div class="mb5" fxLayout="row" fxLayoutAlign="space-between"><span class="bold" contenteditable="true">Order Number</span>:<span class="val" contenteditable="true">5</span></div>
+        </div>
+    </div>
+
+    <div class="selected-column-row invoiceHeader" fxLayout="row" fxLayoutAlign="space-around center" [style.backgroundColor]="accentColor">
+        <!-- <div *ngFor="let column of Object.keys(columns)" fxFlex="1">{{column}}</div> -->
+        <!-- <div fxFlex="5"></div> -->
+        <div fxFlex="20">
+            <i *ngIf="invoiceData?.visibleColumns?.items" class="fa fa-eye-slash"></i>
+            {{invoiceData?.columns?.items}}
+        </div>
+        <div fxFlex="31">
+            <i *ngIf="invoiceData?.visibleColumns?.description" class="fa fa-eye-slash"></i>
+            {{invoiceData?.columns?.description}}
+        </div>
+        <div fxFlex="13" class="text-right">
+            <i *ngIf="invoiceData?.visibleColumns?.quantity" class="fa fa-eye-slash"></i>
+            {{invoiceData?.columns?.quantity}}
+        </div>
+        <div fxFlex="11" class="text-right">
+            <i *ngIf="invoiceData?.visibleColumns?.units" class="fa fa-eye-slash"></i>
+            {{invoiceData?.columns?.units}}
+        </div>
+        <div fxFlex="11" class="text-right">
+            <i *ngIf="invoiceData?.visibleColumns?.price" class="fa fa-eye-slash"></i>
+            {{invoiceData?.columns?.price}}
+        </div>
+        <div fxFlex="14" class="text-right">
+            <i *ngIf="invoiceData?.visibleColumns?.amount" class="fa fa-eye-slash"></i>
+            {{invoiceData?.columns?.amount}}
+        </div>
+        <!-- <div fxFlex="5"></div> -->
+    </div>
+
+    <div cdkDropList (cdkDropListDropped)="drop($event)"  >
+      <ng-container *ngFor="let item of items; let i = index" >
+          <ng-container *ngIf="item">
+             <div class="single-list-item" (click)="selectIndex(i)"  [ngClass]="{'selected':i==index}" cdkDrag>
+              <div class="selected-column-row mb5" fxLayout="row" fxLayoutAlign="space-around flex-start" >
+                  <img class="draggable-icon" src="assets/images/draggable.png" alt="" cdkDragHandle>
+                  <div fxFlex="20">
+                    <!-- <input [(ngModel)]="item['title']" class="form-control" /> -->
+                    <div contenteditable="true">{{item?.title}}</div>
+                  </div>
+                  <div fxFlex="31">
+                      <!-- <input [(ngModel)]="item['description']" class="form-control" /> -->
+                      <div contenteditable="true">{{item?.description}}</div>
+                  </div>
+                  <div fxFlex="12">
+                      <input [(ngModel)]="item['quantity']" (change)="updatePrice(i)" type="number" min="0" class="form-control text-right" />
+                  </div>
+                  <div fxFlex="11">
+                      <input [(ngModel)]="item['units']" (change)="updatePrice(i)" class="form-control text-right" />
+                  </div>
+                  <div fxFlex="11">
+                      <input [(ngModel)]="item['price']" (change)="updatePrice(i)" type="number" min="0" class="form-control text-right" />
+                  </div>
+                  <div class="amount-col" fxFlex="14">
+                      <div class="text-right">{{item?.amount | currency:currencyCode:'symbol':'1.2-2'}}</div>
+                  </div>
+                  <div class="delete-item-option" (click)="deleteItem(i)">
+                      -
+                  </div>
+              </div>
+
+              <div class="selected-column-row tax-display" *ngFor="let tax of item?.taxes; let index=index" fxLayout="row" fxLayoutAlign="space-around center" [style.color]="taxColor">
+                  <div fxFlex="20"></div>
+                  <div fxFlex="31"></div>
+                  <div fxFlex="10"></div>
+                  <div fxFlex="13">
+                      
+                  </div>
+                  <div fxFlex="11">
+                    <div class="text-right">
+                        {{tax?.description}}-{{tax?.value}}{{tax?.type=='percentage' ? '%': getCurrencySymbol() }} 
+                    </div>
+                  </div>
+                  <div class="amount-col" fxFlex="14">
+                      <div class="text-right">{{tax?.amount | currency:currencyCode:'symbol':'1.2-2'}}</div>
+                  </div>
+                  <div class="delete-item-option" (click)="removeTaxFromItem(i,index)">
+                      -
+                  </div>
+              </div>
+
+              <div class="selected-column-row noPrint" *ngIf="!item?.taxValue" fxLayout="row" fxLayoutAlign="flex-end center">
+                  <!-- <div fxFlex="60"> </div> -->
+                  <div fxFlex="20"></div>
+                  <div fxFlex="31"></div>
+                  <div fxFlex="4"></div>
+                  <!-- <div fxFlex="11"></div> -->
+                  <div class="label-tax-field" fxFlex="19" fxLayout="row-reverse">
+                  </div>
+                  <div fxFlex="11" class="text-right">
+                    <span class="tax-view pointer clicked text-right action-btn" [matMenuTriggerFor]="taxFilter" (click)="taxChangeEvent('')">
+                        +Add Tax
+                        <!-- <img class="png-icon" src="../../../../../assets/icons/play_arrow-black-48dp.png"> -->
+                    </span>
+
+                    <mat-menu class="optns taxes-optns" [overlapTrigger]='false' #taxFilter="matMenu" xPosition="after"
+                    yPosition="below">
+                    <div class="tax-view-container">
+                        <div (click)="$event.stopPropagation()">
+                            <input class="form-control" [(ngModel)]="newTax" (keyup)="taxChangeEvent($event)" placeholder="Search Tax" type="text" class="tax-search" />
+                        </div>
+                        <div class="taxes-lists" *ngFor="let option of filteredTaxes">
+                            <div  class="taxes-each-list" (click)="onTaxSelect(option,i)" fxLayout="row" fxLayoutAlign="start center" >
+                                <div fxLayout="column">
+                                    <div class="pointer">{{option?.value}} {{option?.type=='percentage'? '%':'Flat'}} {{option?.description}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="divider"></div>
+                        <div>
+                            <button mat-menu-item class="purple" (click)="addNewTax(i);">+ Create New Tax</button>
+                        </div> -->
+                    </div>
+                  </mat-menu>
+                  </div>
+                  <div fxFlex="14"></div>
+              </div>
+
+            </div>
+          </ng-container>
+      </ng-container>
+  </div>
+
+
+
+
+
+
+
+
+
+<div class="selected-column-row new-item-row noPrint" fxLayout="row">
+    <span (click)="addNewItem()" class="action-btn">+Add Item</span>
+</div>
+
+
+
+
+<div *ngFor="let key of Object.keys(displayTaxes)" class="selected-column-row p-10"  fxLayout="row" fxLayoutAlign="space-around center">
+  <div fxFlex="20"></div>
+  <div fxFlex="31"></div>
+  <div fxFlex="12"></div>
+  <div fxFlex="11" class="text-right"></div>
+  <div fxFlex="11" class="text-right">{{key}}</div>
+  <div fxFlex="14" class="text-right">{{displayTaxes[key] | currency:currencyCode:'symbol':'1.2-2'}}</div>
+</div>
+
+<div class="selected-column-row single-list-item new-item-row"  fxLayout="row" fxLayoutAlign="space-around center">
+  <div fxFlex="20"></div>
+  <div fxFlex="31"></div>
+  <div fxFlex="12"></div>
+  <div fxFlex="11"></div>
+  <div fxFlex="11" class="text-right bold">Subtotal</div>
+  <div fxFlex="14" class="text-right">{{subTotalAfterTax | currency:currencyCode:'symbol':'1.2-2'}}</div>
+</div>
+
+  <div *ngFor="let item of discounts; let i=index" class="selected-column-row discount-row" fxLayout="row" fxLayoutAlign="space-around center">
+      <div fxFlex="6"></div>
+      <div fxFlex="31">
+        <!-- <div class="text-right">Discount</div> -->
+    </div>
+      <div fxFlex="15" class="text-right"> 
+          <!-- <select [(ngModel)]="item.type" (change)="discountCalculation()" class="form-control">
+              <option value="flat price">Flat price</option>
+              <option value="percentage">Percentage</option>
+          </select> -->
+      </div>
+      <!-- <div fxFlex="22" class="text-right">                        
+      </div> -->
+      <div fxFlex="33">
+        <div *ngIf="!previewMode" fxLayout="row">
+            <input [(ngModel)]="item.description" (change)="discountCalculation()" type="text" placeholder="Enter description" class="form-control text-right" style="width:175px" />
+            <div class="text-right conversion-wrap">
+                <input [(ngModel)]="item.value" (change)="discountCalculation()" type="number" class="form-control text-right" />
+                <span class="conversion-icon" (click)="changeTaxType(item); discountCalculation();">
+                    {{item?.type == 'percentage' ? "%" : "$"}}
+                </span>
+            </div>
+        </div>
+        <div *ngIf="previewMode" class="text-right">
+            {{item.description}} {{item.value}} {{item?.type == 'percentage' ? "%" : "$"}}
+        </div>
+      </div>
+      <div fxFlex="14" class="amount-col">
+          <div class="text-right">
+              {{item?.total | currency:currencyCode:'symbol':'1.2-2'}}
+          </div>                            
+      </div>
+      <div class="delete-item-option" (click)="removeDiscount(i)">
+          -
+      </div>
+  </div>
+
+<div class="selected-column-row single-list-item p-20 noPrint"  fxLayout="row" fxLayoutAlign="space-around center">
+  <div fxFlex="20"></div>
+  <div fxFlex="31"></div>
+  <div fxFlex="12"></div>
+  <div fxFlex="6"></div>
+  <div fxFlex="16" class="text-right discount-add"><span  (click)="addNewDiscount()" class="action-btn">+Add Discount</span></div>
+  <div fxFlex="14"></div>
+</div>
+
+<div class="selected-column-row single-list-item p-20" fxLayout="row" fxLayoutAlign="space-around center">
+  <div fxFlex="20"></div>
+  <div fxFlex="31"></div>
+  <div fxFlex="12"></div>
+  <div fxFlex="11"></div>
+  <div fxFlex="11" class="text-right bold">Total</div>
+  <div fxFlex="14" class="text-right">{{subTotalAfterDiscount | currency:currencyCode:'symbol':'1.2-2'}}</div>
+
+</div>
+
+
+
+<div *ngFor="let item of spaces;" class="selected-column-row spacer">
+    <div class="delete-item-option" (click)="removeSpace()">
+        -
+    </div>
+</div>
+<div class="selected-column-row new-item-row noPrint" fxLayout="row">
+    <span (click)="addNewSpace()" class="action-btn">+Add Space</span>
+</div>
+
+<div [style.backgroundColor]="accentColor" style="margin-bottom:0px;padding:2px;"></div>
+
+<div class="selected-column-row single-list-item footer">
+    <p contenteditable="true">Payment is requested within 15 days of recieving this invoice.</p>
+</div>
+
+</div>
+<!-- <pre>{{filteredTaxes | json}}</pre> -->

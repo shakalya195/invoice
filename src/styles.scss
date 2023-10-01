@@ -1,1 +1,299 @@
 /* You can add global styles to this file, and also import other style files */
+
+body{
+    padding:0px;
+    margin:0px;
+    font-family: sans-serif;
+    font-size:16px;
+}
+.options{
+    left: 0px;
+    transition: all 1s;
+    position: fixed;
+    width: 200px;
+    background: #eee;
+    min-height: 100vh;
+    z-index: 1;
+    input{
+        border-radius: 5px;
+        border: solid thin #ccc;
+    }
+    .title{
+        padding: 10px;
+        font-weight: bold;
+        background: #ffd740;
+    }
+    .inText{
+        width:80px;
+    }
+    .op{
+        padding:10px;
+        transition: all 1s;
+        border-bottom: solid thin #ddd;
+    }
+    .op:hover{
+        cursor: pointer;
+        background: #e0dff9;
+    }
+    .tax-row{
+        padding: 5px 5px 5px 20px;
+        position: relative;
+    }
+    .tax-row:hover{
+        cursor: pointer;
+        background: #e0dff9;
+    }
+    .tax-row:hover .delete-item-option{
+        display: block;
+        top:5px;
+    }
+    .color-text{
+        width: 127px;
+        height: 30px;
+        display: inline-block;
+    }
+    .color-input{
+        display: inline-block;
+        vertical-align: middle;
+        height: 30px;
+        width: 55px;
+    }
+}
+.tinypdf{
+    height: 25px;
+    width: auto;
+    vertical-align: middle;
+}
+.mt-20{margin-top:20px;}
+.mt-30{margin-top:30px;}
+.logo{
+    position:relative
+}
+.logo input[type='file']{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    opacity: 0;
+}
+.billto{
+    font-weight: bold;
+}
+.info .bold{
+    width: 150px;
+    display: inline-block;
+    text-align: right;
+}
+.info .val{
+    width: 150px;
+    display: inline-block;
+    text-align: right;
+}
+.pointer{
+    cursor: pointer;
+}
+.handle{
+    position: absolute;
+    width: 10px;
+    height: 50px;
+    background: red;
+    left: 200px;
+    border-radius: 0px 10px 10px 0px;
+    cursor: pointer;
+    transition: all .5s;
+}
+.handle:hover{
+    width:25px;
+}
+.options.hide{
+    left:-200px;
+}
+.invoice{
+    width: 1000px;
+    margin: 3px auto;
+    background-color: #eee;
+    min-height: 500px;
+    padding-top: 50px;
+    // padding-bottom: 50px;
+    // box-shadow: 1px 1px 5px #888;
+    .sider{
+        padding-right:50px;
+        padding-left:50px;
+    }
+    .w-50{
+        width:50px;
+        padding:0px;
+    }
+    .logo .logo-img{
+        max-height:100px;
+    }
+    .head{
+        height: 50px;
+        background: #4a4694;
+        color:#fff;
+    }
+}
+.table{
+    width:100%;
+    caption-side: bottom;
+    border-collapse: collapse;
+    th{
+        color:#fff;
+    }
+    th{
+        padding:15px 10px;
+        text-align: left;
+    }
+    td{
+        padding:10px;
+        text-align: left;
+        vertical-align: top;
+    }
+    th:nth-last-child(2),th:nth-last-child(3),th:nth-last-child(4),
+    td:nth-last-child(2),td:nth-last-child(3),td:nth-last-child(4){
+        text-align: right !important;
+    }
+    th:nth-last-child(2),td:nth-last-child(2){
+        width:100px !important;
+    }
+    th:nth-last-child(3),td:nth-last-child(3){
+        width:100px !important;
+    }
+    th:nth-last-child(4),td:nth-last-child(4){
+        width:50px !important;
+    }
+}
+.form-control{
+    font-size: inherit;
+    background: transparent;
+    border: none;
+    font-family: sans-serif;
+    width: 100%;
+    text-align: inherit;
+    padding-top: 0px;
+}
+.form-control:focus-visible{
+    outline: none;
+}
+.selected-column-row{
+    margin-right:0px;
+    margin-left:0px;
+    padding-right:50px;
+    padding-left:50px;
+    position: relative;
+}
+.mb5{
+    margin-bottom:5px;
+}
+.mb10{
+    margin-bottom:10px;
+}
+.text-right{
+    text-align:right;
+}
+.invoiceHeader{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    color:#fff;
+}
+.tax-display{
+    font-size: 14px;
+    color: #999;
+}
+.single-list-item{
+    padding-top:10px;
+    padding-bottom:10px;
+    margin-bottom:5px;
+}
+.single-list-item.selected{
+    background: #2d2a1f1f;
+}
+.previewMode .single-list-item.selected{
+    background:transparent;
+}
+.action-btn{
+    padding: 4px 8px;
+    background: rgb(207, 250, 207);
+    color: green;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 4px;
+    display: inline-block;
+}
+.taxes-lists{
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.add-tax-row{
+    input{
+        width:50px;
+    }
+}
+.noPrint.active{
+    display: none !important;
+}
+.conversion-wrap{
+    input{
+        width:80px;
+    }
+}
+.bold{
+    font-weight: bold;
+}
+.conversion-icon{
+    width: 30px;
+    height: 24px;
+    background: #fff495;
+    display: inline-block;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    padding-top: 5px;
+}
+.previewMode .conversion-icon{
+    background-color: transparent;
+}
+.delete-item-option{
+    width: 18px;
+    height: 18px;
+    color: red;
+    display: none;
+    position: absolute;
+    top: -1px;
+    right: 24px;
+    background: #f9e083;
+    text-align: center;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.selected-column-row:hover .delete-item-option{
+    display: block;
+}
+.discount-row .amount-col{
+    color:red;
+}
+.discount-row .delete-item-option{
+    top:5px;
+}
+.footer{
+    text-align: center;
+    background-color: #dedede70;
+}
+.spacer{
+    height:50px;
+}
+.spacer:hover{
+    background-color: #eeeeee80;
+}
+.tax-search{
+    padding: 7px;
+    margin: 4px auto;
+    width: 85%;
+    display: block;
+    border-radius: 4px;
+    border: solid thin #eee;
+}
