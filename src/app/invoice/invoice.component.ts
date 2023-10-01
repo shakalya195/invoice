@@ -97,6 +97,7 @@ export class InvoiceComponent implements OnInit {
   ];
 
   spaces:any[]=[];
+  window=window;
 
   constructor(
     private toastr:ToastrService,
@@ -111,6 +112,9 @@ export class InvoiceComponent implements OnInit {
       this.invoiceData.taxColor ? this.taxColor = this.invoiceData.taxColor:'';
     }
     this.getAllTaxes();
+    for(let i=0;i<30;i++){
+      this.addNewItem(i);
+    }
   }
 
   getCurrencySymbol(){
@@ -151,26 +155,83 @@ export class InvoiceComponent implements OnInit {
     this.preview();
 
     setTimeout(()=>{
-      html2canvas(this.printmedia.nativeElement,{
-        allowTaint: true,
-        useCORS: true
-      }).then(canvas=>{
-        const imgData = canvas.toDataURL('image/jpeg');
-        // console.log('imgData',imgData);
-        // document.getElementsByClassName('cccc')[0].append(canvas);
-        const pdf = new jsPDF({
-          orientation:'portrait'
-        });
-        const imageProps = pdf.getImageProperties(imgData)
-        const pdfw = pdf.internal.pageSize.getWidth()
-        const pdfh = (imageProps.height * pdfw) / imageProps.width
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfw, pdfh)
-        pdf.save("invoice-"+Date.now()+".pdf");
-        this.previewClear();
-      });
+      // html2canvas(this.printmedia.nativeElement,{
+      //   allowTaint: true,
+      //   useCORS: true
+      // }).then(canvas=>{
+      //   const imgData = canvas.toDataURL('image/jpeg');
+      //   // console.log('imgData',imgData);
+      //   // document.getElementsByClassName('cccc')[0].append(canvas);
+      //   const pdf = new jsPDF({
+      //     orientation:'portrait'
+      //   });
+      //   const imageProps = pdf.getImageProperties(imgData)
+      //   const pdfw = pdf.internal.pageSize.getWidth()
+      //   const pdfh = (imageProps.height * pdfw) / imageProps.width;
+      //   console.log('WIDTH====>',pdfw,'HEIGHT===>',pdfh);
+      //   pdf.addImage(imgData, 'PNG', 0, 0, pdfw, pdfh)
+      //   pdf.save("invoice-"+Date.now()+".pdf");
+      //   this.previewClear();
+      // });
+      this.makePDF();
     },1000);
 
   }
+
+
+  makePDF() {
+
+    var quotes = this.printmedia.nativeElement;
+    html2canvas(quotes).then((canvas) => {
+         //! MAKE YOUR PDF
+         var pdf = new jsPDF('p', 'pt', 'letter');
+ 
+         for (var i = 0; i <= quotes.clientHeight/980; i++) {
+             //! This is all just html2canvas stuff
+             var srcImg  = canvas;
+             var sX      = 0;
+             var sY      = 1100*i; // start 980 pixels down for every new page
+             var sWidth  = 900;
+             var sHeight = 1100;
+             var dX      = 0;
+             var dY      = 0;
+             var dWidth  = 900;
+             var dHeight = 1100;
+ 
+             let onePageCanvas = document.createElement("canvas");
+             onePageCanvas.setAttribute('width', '900');
+             onePageCanvas.setAttribute('height', '1200');
+             var ctx = onePageCanvas.getContext('2d');
+             // details on this usage of this function: 
+             // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
+             ctx.drawImage(srcImg,sX,sY,sWidth,sHeight,dX,dY,dWidth,dHeight);
+ 
+             // document.body.appendChild(canvas);
+             var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
+ 
+             var width         = onePageCanvas.width;
+             var height        = onePageCanvas.clientHeight;
+ 
+             //! If we're on anything other than the first page,
+             // add another page
+             if (i > 0) {
+                 pdf.addPage([612, 791]); //8.5" x 11" in pts (in*72)
+             }
+             //! now we declare that we're working on that page
+             pdf.setPage(i+1);
+             //! now we add content to that page!
+             if(i == 0){
+              pdf.addImage(canvasDataURL, 'PNG', 0, 0,pdf.internal.pageSize.getWidth(), (height*.62));
+             }else{
+              pdf.addImage(canvasDataURL, 'PNG', 0, 20,pdf.internal.pageSize.getWidth(), (height*.62));
+             }
+             
+ 
+         }
+         //! after the for loop is finished running, we save the pdf.
+         pdf.save('Test.pdf');
+   });
+ }
 
   changeToUppercase(){
     this.accentColor = this.accentColor.toUpperCase();
@@ -191,12 +252,14 @@ export class InvoiceComponent implements OnInit {
     }
   }
 
-  addNewItem(){
+  addNewItem(i=1){
     let item:any={};
     item.title = 'Item';
     item.description = 'Item Description';
     item.units = 'Unit';
-    item.quantity = 1;
+    item.quantity = i;
+    item.price = 10;
+    item.amount = 10;
     item.taxes = [];
 
     this.items.push(item);

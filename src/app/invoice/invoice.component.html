@@ -112,8 +112,9 @@
           <ng-container *ngIf="item">
              <div class="single-list-item" (click)="selectIndex(i)"  [ngClass]="{'selected':i==index}" cdkDrag>
               <div class="selected-column-row mb5" fxLayout="row" fxLayoutAlign="space-around flex-start" >
-                  <img class="draggable-icon" src="assets/images/draggable.png" alt="" cdkDragHandle>
+                  <img class="draggable-icon" src="assets/draggable.png" alt="" cdkDragHandle>
                   <div fxFlex="20">
+                   
                     <!-- <input [(ngModel)]="item['title']" class="form-control" /> -->
                     <div contenteditable="true">{{item?.title}}</div>
                   </div>

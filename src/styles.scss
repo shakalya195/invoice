@@ -109,7 +109,7 @@ body{
     left:-200px;
 }
 .invoice{
-    width: 1000px;
+    width: 900px;
     margin: 3px auto;
     background-color: #eee;
     min-height: 500px;
@@ -212,6 +212,9 @@ body{
 .previewMode .single-list-item.selected{
     background:transparent;
 }
+.previewMode .draggable-icon{
+    display: none;
+}
 .action-btn{
     padding: 4px 8px;
     background: rgb(207, 250, 207);
@@ -296,4 +299,13 @@ body{
     display: block;
     border-radius: 4px;
     border: solid thin #eee;
+}
+.draggable-icon{
+    width: 10px;
+    position: absolute;
+    left: 30px;
+    cursor: pointer;
+}
+.single-list-item.cdk-drag-placeholder{
+    background: #e7fbe3;
 }
