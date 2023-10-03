@@ -94,7 +94,7 @@ body{
 }
 .handle{
     position: absolute;
-    width: 10px;
+    width: 30px;
     height: 50px;
     background: red;
     left: 200px;
@@ -102,9 +102,7 @@ body{
     cursor: pointer;
     transition: all .5s;
 }
-.handle:hover{
-    width:25px;
-}
+
 .options.hide{
     left:-200px;
 }
@@ -240,7 +238,7 @@ body{
 }
 .conversion-wrap{
     input{
-        width:80px;
+        width:50px;
     }
 }
 .bold{
@@ -308,4 +306,9 @@ body{
 }
 .single-list-item.cdk-drag-placeholder{
     background: #e7fbe3;
+}
+
+canvas{
+    // margin-top:50px;
+    border-top:solid 50px red;
 }

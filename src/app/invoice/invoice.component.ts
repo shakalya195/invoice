@@ -112,9 +112,9 @@ export class InvoiceComponent implements OnInit {
       this.invoiceData.taxColor ? this.taxColor = this.invoiceData.taxColor:'';
     }
     this.getAllTaxes();
-    for(let i=0;i<30;i++){
-      this.addNewItem(i);
-    }
+    // for(let i=0; i <30; i++){
+    //   this.addNewItem(i);
+    // }
   }
 
   getCurrencySymbol(){
@@ -155,38 +155,92 @@ export class InvoiceComponent implements OnInit {
     this.preview();
 
     setTimeout(()=>{
-      // html2canvas(this.printmedia.nativeElement,{
-      //   allowTaint: true,
-      //   useCORS: true
-      // }).then(canvas=>{
-      //   const imgData = canvas.toDataURL('image/jpeg');
-      //   // console.log('imgData',imgData);
-      //   // document.getElementsByClassName('cccc')[0].append(canvas);
-      //   const pdf = new jsPDF({
-      //     orientation:'portrait'
-      //   });
-      //   const imageProps = pdf.getImageProperties(imgData)
-      //   const pdfw = pdf.internal.pageSize.getWidth()
-      //   const pdfh = (imageProps.height * pdfw) / imageProps.width;
-      //   console.log('WIDTH====>',pdfw,'HEIGHT===>',pdfh);
-      //   pdf.addImage(imgData, 'PNG', 0, 0, pdfw, pdfh)
-      //   pdf.save("invoice-"+Date.now()+".pdf");
-      //   this.previewClear();
-      // });
-      this.makePDF();
+      this.makePDF1();
+      // this.makePDF2();
     },1000);
 
   }
+  makePDF1(){
+     html2canvas(this.printmedia.nativeElement,{
+        allowTaint: true,
+        useCORS: true
+      }).then(canvas=>{
+        // document.getElementById('can').append(canvas);
+        // console.log('canvas',canvas.width, canvas.height);
+        var w = canvas.width;
+        var h = w*1.25;
+        // alert(`${canvas.width}  ${canvas.height} ${w} ${h}`);
+        const imgData = canvas.toDataURL('image/jpeg');
+        // console.log('imgData',imgData);
+        // document.getElementsByClassName('cccc')[0].append(canvas);
+        document.getElementById('can').append(canvas);
+        // const pdf = new jsPDF({
+        //   orientation:'portrait'
+        // });
+        // const imageProps = pdf.getImageProperties(imgData)
+        // const pdfw = pdf.internal.pageSize.getWidth()
+        // const pdfh = (imageProps.height * pdfw) / imageProps.width;
+        // console.log('WIDTH====>',pdfw,'HEIGHT===>',pdfh);
+        // pdf.addImage(imgData, 'PNG', 0, 0, pdfw, pdfh)
+        // pdf.save("invoice-"+Date.now()+".pdf");
+        // this.previewClear();
+        const pdf = new jsPDF({
+          orientation:'portrait'
+        });
+        for (var i = 0; i <= this.printmedia.nativeElement.clientHeight/1200; i++) {
+          let onePageCanvas = document.createElement("canvas");
+          onePageCanvas.setAttribute('width', `${w}`);
+          onePageCanvas.setAttribute('height', `${h}`);
+
+          var ctx = onePageCanvas.getContext('2d');
+          ctx.fillStyle = this.bgColor;
+          ctx.fillRect(0,0,5000,10000);
+
+          var ctx = onePageCanvas.getContext('2d');
+          ctx.drawImage(canvas,0,h*i,w,h,0,0,w,h);
+          // document.getElementById('can').append(onePageCanvas);
+          
+          const imgData = onePageCanvas.toDataURL('image/jpeg');
+          const imageProps = pdf.getImageProperties(imgData)
+          const pdfw = pdf.internal.pageSize.getWidth()
+          const pdfh = (imageProps.height * pdfw) / imageProps.width;
+          // console.log('WIDTH====>',pdfw,'HEIGHT===>',pdfh);
 
 
-  makePDF() {
+          let bg = document.createElement("canvas");
+          bg.setAttribute('width', `${w}`);
+          bg.setAttribute('height', `${h}`);
+          var ctx = bg.getContext('2d');
+          ctx.fillStyle = this.bgColor;
+          ctx.fillRect(0,0,5000,10000);
+          const bgData = bg.toDataURL('image/jpeg');
+          // document.getElementById('can').append(bg);
+          if (i > 0) {
+            pdf.addPage([210, 262]); //8.5" x 11" in pts (in*72)
+          }
+          // //! now we declare that we're working on that page
+          pdf.setPage(i+1);
+          pdf.addImage(bgData, 'JPEG', 0, 0, 5000, 10000);
+          if(i==0){
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfw, pdfh);
+          }else{
+            pdf.addImage(imgData, 'JPEG', 0, 20, pdfw, pdfh);
+          }
+          
+        }
+        pdf.save("invoice-"+Date.now()+".pdf");
+      });
+  }
+
+  makePDF2() {
 
     var quotes = this.printmedia.nativeElement;
     html2canvas(quotes).then((canvas) => {
          //! MAKE YOUR PDF
+         
          var pdf = new jsPDF('p', 'pt', 'letter');
  
-         for (var i = 0; i <= quotes.clientHeight/980; i++) {
+         for (var i = 0; i <= quotes.clientHeight/1100; i++) {
              //! This is all just html2canvas stuff
              var srcImg  = canvas;
              var sX      = 0;
@@ -205,7 +259,8 @@ export class InvoiceComponent implements OnInit {
              // details on this usage of this function: 
              // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
              ctx.drawImage(srcImg,sX,sY,sWidth,sHeight,dX,dY,dWidth,dHeight);
- 
+          
+             document.getElementById('can').append(onePageCanvas);
              // document.body.appendChild(canvas);
              var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
  
@@ -229,7 +284,7 @@ export class InvoiceComponent implements OnInit {
  
          }
          //! after the for loop is finished running, we save the pdf.
-         pdf.save('Test.pdf');
+         pdf.save("invoice-"+Date.now()+".pdf");
    });
  }
 
@@ -255,13 +310,12 @@ export class InvoiceComponent implements OnInit {
   addNewItem(i=1){
     let item:any={};
     item.title = 'Item';
-    item.description = 'Item Description';
+    item.description = 'Description';
     item.units = 'Unit';
     item.quantity = i;
     item.price = 10;
     item.amount = 10;
     item.taxes = [];
-
     this.items.push(item);
   }
 
