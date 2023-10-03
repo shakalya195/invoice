@@ -173,7 +173,7 @@ export class InvoiceComponent implements OnInit {
         const imgData = canvas.toDataURL('image/jpeg');
         // console.log('imgData',imgData);
         // document.getElementsByClassName('cccc')[0].append(canvas);
-        document.getElementById('can').append(canvas);
+        // document.getElementById('can').append(canvas);
         // const pdf = new jsPDF({
         //   orientation:'portrait'
         // });
